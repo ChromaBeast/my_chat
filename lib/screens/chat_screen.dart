@@ -14,9 +14,10 @@ class ChatScreen extends GetView<ChatController> {
 
     for (int i = 0; i < lines.length; i++) {
       String line = lines[i].trim();
-      
+
       if (line.isEmpty) {
-        if (i < lines.length - 1) { // Only add newline if not the last line
+        if (i < lines.length - 1) {
+          // Only add newline if not the last line
           spans.add(const TextSpan(text: '\n'));
         }
         continue;
@@ -24,17 +25,20 @@ class ChatScreen extends GetView<ChatController> {
 
       // Handle headings
       if (line.startsWith('### ')) {
-        spans.add(TextSpan(
-          text: '${line.substring(4)}${i < lines.length - 1 ? '\n' : ''}',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: isUser
-                ? Theme.of(context).colorScheme.onPrimary
-                : Theme.of(context).colorScheme.primary,
-            height: 1.8,
+        spans.add(
+          TextSpan(
+            text: '${line.substring(4)}${i < lines.length - 1 ? '\n' : ''}',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color:
+                  isUser
+                      ? Theme.of(context).colorScheme.onPrimary
+                      : Theme.of(context).colorScheme.primary,
+              height: 1.8,
+            ),
           ),
-        ));
+        );
       }
       // Handle bullet points
       else if (line.startsWith('- ')) {
@@ -42,54 +46,61 @@ class ChatScreen extends GetView<ChatController> {
           spans.add(const TextSpan(text: '\n'));
         }
         isInList = true;
-        spans.add(TextSpan(
-          text: '• ${line.substring(2)}${i < lines.length - 1 ? '\n' : ''}',
-          style: TextStyle(
-            fontSize: 15,
-            color: isUser
-                ? Theme.of(context).colorScheme.onPrimary
-                : Theme.of(context).colorScheme.primary,
-            height: 1.4,
+        spans.add(
+          TextSpan(
+            text: '• ${line.substring(2)}${i < lines.length - 1 ? '\n' : ''}',
+            style: TextStyle(
+              fontSize: 15,
+              color:
+                  isUser
+                      ? Theme.of(context).colorScheme.onPrimary
+                      : Theme.of(context).colorScheme.primary,
+              height: 1.4,
+            ),
           ),
-        ));
+        );
       }
       // Handle normal paragraphs
       else {
         isInList = false;
-        spans.add(TextSpan(
-          text: '$line${i < lines.length - 1 ? '\n' : ''}',
-          style: TextStyle(
-            fontSize: 15,
-            color: isUser
-                ? Theme.of(context).colorScheme.onPrimary
-                : Theme.of(context).colorScheme.primary,
-            height: 1.4,
+        spans.add(
+          TextSpan(
+            text: '$line${i < lines.length - 1 ? '\n' : ''}',
+            style: TextStyle(
+              fontSize: 15,
+              color:
+                  isUser
+                      ? Theme.of(context).colorScheme.onPrimary
+                      : Theme.of(context).colorScheme.primary,
+              height: 1.4,
+            ),
           ),
-        ));
+        );
       }
     }
 
     return TextSpan(children: spans);
   }
 
-  Widget _buildMessage(String text, bool isUser, BuildContext context, bool isLight) {
+  Widget _buildMessage(
+    String text,
+    bool isUser,
+    BuildContext context,
+    bool isLight,
+  ) {
     // Clean up any potential encoding issues
-    final cleanText = text.replaceAll('ð', '😊')
-                         .replaceAll('', '')
-                         .trim();
-                         
+    final cleanText = text.replaceAll('ð', '😊').replaceAll('', '').trim();
+
     return Container(
       constraints: BoxConstraints(
         maxWidth: MediaQuery.of(context).size.width * 0.75,
       ),
-      padding: const EdgeInsets.symmetric(
-        horizontal: 14,
-        vertical: 10,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
-        color: isUser
-            ? Theme.of(context).colorScheme.primary
-            : (isLight ? Colors.grey.shade100 : Colors.grey.shade900),
+        color:
+            isUser
+                ? Theme.of(context).colorScheme.primary
+                : (isLight ? Colors.grey.shade100 : Colors.grey.shade900),
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(isUser ? 16 : 4),
           topRight: Radius.circular(isUser ? 4 : 16),
@@ -114,7 +125,7 @@ class ChatScreen extends GetView<ChatController> {
   @override
   Widget build(BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
-    
+
     return Scaffold(
       backgroundColor: isLight ? Colors.grey.shade50 : Colors.black,
       appBar: AppBar(
@@ -144,13 +155,17 @@ class ChatScreen extends GetView<ChatController> {
                     color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
-                Obx(() => Text(
-                  controller.isLoading.value ? 'Typing...' : 'Online',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Theme.of(context).colorScheme.primary.withValues(alpha:0.7),
+                Obx(
+                  () => Text(
+                    controller.isLoading.value ? 'Typing...' : 'Online',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withValues(alpha: 0.7),
+                    ),
                   ),
-                )),
+                ),
               ],
             ),
           ],
@@ -165,11 +180,13 @@ class ChatScreen extends GetView<ChatController> {
           ),
           IconButton(
             icon: Icon(
-              Get.isDarkMode ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+              Get.isDarkMode
+                  ? Icons.light_mode_outlined
+                  : Icons.dark_mode_outlined,
             ),
             onPressed: () {
               Get.changeThemeMode(
-                Get.isDarkMode ? ThemeMode.light : ThemeMode.dark
+                Get.isDarkMode ? ThemeMode.light : ThemeMode.dark,
               );
             },
             tooltip: 'Toggle Theme',
@@ -182,14 +199,16 @@ class ChatScreen extends GetView<ChatController> {
             height: 1,
             color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
           ),
-          Obx(() => AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            height: controller.isLoading.value ? 1 : 0,
-            child: LinearProgressIndicator(
-              backgroundColor: Colors.transparent,
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+          Obx(
+            () => AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              height: controller.isLoading.value ? 1 : 0,
+              child: LinearProgressIndicator(
+                backgroundColor: Colors.transparent,
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+              ),
             ),
-          )),
+          ),
           Expanded(
             child: Obx(() {
               if (controller.messages.isEmpty) {
@@ -197,24 +216,32 @@ class ChatScreen extends GetView<ChatController> {
                   child: Text(
                     'No messages yet',
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withOpacity(0.5),
                     ),
                   ),
                 );
               }
-              
+
               return ListView.builder(
                 reverse: true,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 itemCount: controller.messages.length,
                 itemBuilder: (context, index) {
                   final message = controller.messages[index];
                   final isUser = message.isUser;
-                  
+
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: Row(
-                      mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+                      mainAxisAlignment:
+                          isUser
+                              ? MainAxisAlignment.end
+                              : MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         if (!isUser) ...[
@@ -224,10 +251,13 @@ class ChatScreen extends GetView<ChatController> {
                             margin: const EdgeInsets.only(right: 8, bottom: 2),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: isLight ? Colors.white : Colors.grey.shade800,
+                              color:
+                                  isLight ? Colors.white : Colors.grey.shade800,
                               boxShadow: [
                                 BoxShadow(
-                                  color: Theme.of(context).colorScheme.shadow.withOpacity(0.05),
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.shadow.withOpacity(0.05),
                                   blurRadius: 8,
                                   offset: const Offset(0, 2),
                                 ),
@@ -256,12 +286,14 @@ class ChatScreen extends GetView<ChatController> {
               );
             }),
           ),
-          Obx(() => ChatInput(
-            onSendPressed: controller.sendMessage,
-            isLoading: controller.isLoading.value,
-          )),
+          Obx(
+            () => ChatInput(
+              onSendPressed: controller.sendMessage,
+              isLoading: controller.isLoading.value,
+            ),
+          ),
         ],
       ),
     );
   }
-} 
+}

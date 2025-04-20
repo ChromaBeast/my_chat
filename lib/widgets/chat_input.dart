@@ -77,9 +77,14 @@ class _ChatInputState extends State<ChatInput> {
                       focusNode: _focusNode,
                       enabled: !widget.isLoading,
                       decoration: InputDecoration(
-                        hintText: widget.isLoading ? 'Waiting for response...' : 'Type a message',
+                        hintText:
+                            widget.isLoading
+                                ? 'Waiting for response...'
+                                : 'Type a message',
                         hintStyle: TextStyle(
-                          color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.primary.withOpacity(0.5),
                           fontSize: 15,
                         ),
                         border: InputBorder.none,
@@ -121,4 +126,4 @@ class _ChatInputState extends State<ChatInput> {
       ),
     );
   }
-} 
+}

@@ -1,0 +1,1 @@
+C:\Projects\my_chat\build\app\intermediates\cxx\RelWithDebInfo\3h6z9315\obj\arm64-v8a
