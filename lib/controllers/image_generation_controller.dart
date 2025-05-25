@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:super_ai/common/custom_toast.dart';
 import '../services/image_generation_service.dart';
 import 'package:gallery_saver_plus/gallery_saver.dart';
 import 'dart:convert';
@@ -100,13 +101,8 @@ class ImageGenerationController extends GetxController {
       }
     } catch (e) {
       log('Error picking image: $e');
-      Get.snackbar(
-        'Error',
+      CustomToast.showError(
         'Failed to pick image: ${e.toString()}',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red.shade100,
-        colorText: Colors.red.shade900,
-        duration: const Duration(seconds: 3),
       );
     }
   }
@@ -161,12 +157,17 @@ class ImageGenerationController extends GetxController {
       final hasPermission = await _requestStoragePermission();
       if (!hasPermission) {
         throw Exception(
-            'Permission denied: Unable to access storage. Please grant permission in Settings.');
+          'Permission denied: Unable to access storage. Please grant permission in Settings.',
+        );
       }
 
       // Convert base64 to file
-      final bytes = base64Decode(generatedImageUrl.value
-          .replaceFirst(RegExp(r'data:image/[^;]+;base64,'), ''));
+      final bytes = base64Decode(
+        generatedImageUrl.value.replaceFirst(
+          RegExp(r'data:image/[^;]+;base64,'),
+          '',
+        ),
+      );
 
       // Get temporary directory to save the file first
       final tempDir = await getTemporaryDirectory();
@@ -178,19 +179,14 @@ class ImageGenerationController extends GetxController {
       await imageFile.writeAsBytes(bytes);
 
       // Save to gallery using gallery_saver
-      final success = await GallerySaver.saveImage(tempPath,
-          albumName: 'AI Generated Images');
+      final success = await GallerySaver.saveImage(
+        tempPath,
+        albumName: 'AI Generated Images',
+      );
 
       if (success == true) {
         showDownloadSuccess();
-        Get.snackbar(
-          'Success',
-          'Image saved to gallery',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green.shade100,
-          colorText: Colors.green.shade900,
-          duration: const Duration(seconds: 2),
-        );
+        CustomToast.showSuccess('Image saved to gallery',);
       } else {
         throw Exception('Failed to save image to gallery');
       }
@@ -208,17 +204,8 @@ class ImageGenerationController extends GetxController {
         errorMessage =
             'Permission denied: Unable to access storage. Please grant permission in Settings.';
       }
-      Get.snackbar(
-        'Error',
+      CustomToast.showError(
         errorMessage,
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red.shade100,
-        colorText: Colors.red.shade900,
-        duration: const Duration(seconds: 5),
-        mainButton: TextButton(
-          onPressed: () => openAppSettings(),
-          child: const Text('Open Settings'),
-        ),
       );
     } finally {
       isDownloading.value = false;
@@ -230,7 +217,9 @@ class ImageGenerationController extends GetxController {
 
     isLoading.value = true;
     try {
-      log('Generating image with source: ${sourceImageBase64.value.isNotEmpty ? 'Yes' : 'No'}');
+      log(
+        'Generating image with source: ${sourceImageBase64.value.isNotEmpty ? 'Yes' : 'No'}',
+      );
       final imageUrl = await _imageService.generateImage(
         promptController.text.trim(),
         negativePrompt: negativePrompt.value,
@@ -253,14 +242,8 @@ class ImageGenerationController extends GetxController {
             'Your prompt contains content that cannot be processed. Please modify your prompt to comply with content guidelines.';
       }
 
-      Get.snackbar(
-        'Error',
+      CustomToast.showError(
         errorMessage,
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red.shade100,
-        colorText: Colors.red.shade900,
-        duration: const Duration(seconds: 5),
-        icon: const Icon(Icons.error_outline),
       );
     } finally {
       isLoading.value = false;

@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "1032132536622",
+    "project_id": "superai-8055b",
+    "storage_bucket": "superai-8055b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1032132536622:android:0c6a063da9d044ce2632bf",
+        "android_client_info": {
+          "package_name": "my.project.my_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1032132536622-vn6koqjvjrf1ce1n118vpl88i5hc9i41.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPDVckHDI1gXD0uvOZK62Sd1atT_Ic28Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1032132536622-vn6koqjvjrf1ce1n118vpl88i5hc9i41.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1032132536622-n1ttuhrr29itcdtk36orh9859gpe8fdi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "my.project.myChat"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

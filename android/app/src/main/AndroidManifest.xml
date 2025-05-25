@@ -3,9 +3,10 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <application
-        android:label="my_chat"
         android:name="${applicationName}"
+        android:label="Super AI"
         android:icon="@mipmap/ic_launcher"
         android:hardwareAccelerated="true">
         <activity

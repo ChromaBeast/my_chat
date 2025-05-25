@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../controllers/speech_to_text_controller.dart';
+import 'animated_dots.dart';
 
 class ChatInput extends StatefulWidget {
   final Function(String) onSendPressed;
@@ -18,11 +21,23 @@ class _ChatInputState extends State<ChatInput> {
   final _textController = TextEditingController();
   bool _canSend = false;
   final FocusNode _focusNode = FocusNode();
+  late final SpeechToTextController _sttController;
 
   @override
   void initState() {
     super.initState();
     _textController.addListener(_updateSendButton);
+    _sttController = Get.put(SpeechToTextController(), tag: 'chatInput');
+    ever<String>(_sttController.recognizedText, (text) {
+      if (text.isNotEmpty) {
+        setState(() {
+          _textController.text = text;
+          _textController.selection = TextSelection.fromPosition(
+            TextPosition(offset: _textController.text.length),
+          );
+        });
+      }
+    });
   }
 
   void _updateSendButton() {
@@ -44,6 +59,7 @@ class _ChatInputState extends State<ChatInput> {
   void dispose() {
     _textController.dispose();
     _focusNode.dispose();
+    Get.delete<SpeechToTextController>(tag: 'chatInput');
     super.dispose();
   }
 
@@ -57,7 +73,7 @@ class _ChatInputState extends State<ChatInput> {
         color: Theme.of(context).scaffoldBackgroundColor,
         border: Border(
           top: BorderSide(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
           ),
         ),
       ),
@@ -84,7 +100,7 @@ class _ChatInputState extends State<ChatInput> {
                         hintStyle: TextStyle(
                           color: Theme.of(
                             context,
-                          ).colorScheme.primary.withOpacity(0.5),
+                          ).colorScheme.primary.withValues(alpha: 0.5),
                           fontSize: 15,
                         ),
                         border: InputBorder.none,
@@ -103,6 +119,35 @@ class _ChatInputState extends State<ChatInput> {
                       onSubmitted: _canSend ? (_) => _handleSend() : null,
                     ),
                   ),
+                  Obx(() {
+                    if (_sttController.isListening.value) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: AnimatedDots(
+                          color: Theme.of(context).colorScheme.primary,
+                          size: 10,
+                        ),
+                      );
+                    } else {
+                      return IconButton(
+                        icon: Icon(
+                          Icons.mic,
+                          color: Theme.of(context).colorScheme.primary,
+                          size: 22,
+                        ),
+                        onPressed:
+                            widget.isLoading
+                                ? null
+                                : () async {
+                                  await _sttController.listen(
+                                    localeId: 'en-IN',
+                                  );
+                                },
+                        splashRadius: 20,
+                        tooltip: 'Speak',
+                      );
+                    }
+                  }),
                   AnimatedOpacity(
                     opacity: _canSend && !widget.isLoading ? 1.0 : 0.5,
                     duration: const Duration(milliseconds: 200),

@@ -8,35 +8,45 @@ class AzureOpenAIService extends GetxService {
   final String apiKey = dotenv.env['AZURE_OPENAI_KEY'] ?? '';
   final String endpoint = dotenv.env['AZURE_OPENAI_ENDPOINT'] ?? '';
   final String deploymentName = dotenv.env['AZURE_OPENAI_DEPLOYMENT'] ?? '';
-  final RxList<Map<String, String>> conversationHistory = <Map<String, String>>[].obs;
+  final RxList<Map<String, String>> conversationHistory =
+      <Map<String, String>>[].obs;
 
   String _cleanResponse(String text) {
+    // Process markdown formatting
+    // Replace **text** with a special marker for bold text
+    final regexBold = RegExp(r'\*\*(.*?)\*\*', dotAll: true);
+    text = text.replaceAllMapped(regexBold, (match) {
+      return '<<bold>>${match.group(1)}<</bold>>';
+    });
+
     // Replace common broken emoji patterns
-    final cleanText = text
-        .replaceAll('ð', '😊')
-        .replaceAll('', '')
-        // Add more emoji replacements as needed
-        .replaceAll(':\)', '😊')
-        .replaceAll(':-\)', '😊')
-        .replaceAll(':D', '😃')
-        .replaceAll(':-D', '😃')
-        .replaceAll(';\)', '😉')
-        .replaceAll(';-\)', '😉')
-        .replaceAll(':P', '😛')
-        .replaceAll(':-P', '😛')
-        .replaceAll(':p', '😛')
-        .replaceAll(':-p', '😛')
-        .trim();
+    final cleanText =
+        text
+            .replaceAll('ð', '😊')
+            .replaceAll('', '')
+            // Add more emoji replacements as needed
+            .replaceAll(':)', '😊')
+            .replaceAll(':-)', '😊')
+            .replaceAll(':D', '😃')
+            .replaceAll(':-D', '😃')
+            .replaceAll(';)', '😉')
+            .replaceAll(';-)', '😉')
+            .replaceAll(':P', '😛')
+            .replaceAll(':-P', '😛')
+            .replaceAll(':p', '😛')
+            .replaceAll(':-p', '😛')
+            .trim();
 
     return cleanText;
   }
 
   Future<String> getChatCompletion(String message) async {
-    final url = '$endpoint/openai/deployments/$deploymentName/chat/completions?api-version=2024-08-01-preview';
-    
+    final url =
+        '$endpoint/openai/deployments/$deploymentName/chat/completions?api-version=2024-08-01-preview';
+
     // Add user message to history
     conversationHistory.add({'role': 'user', 'content': message});
-    
+
     try {
       final response = await http.post(
         Uri.parse(url),
@@ -62,25 +72,28 @@ class AzureOpenAIService extends GetxService {
         final responseBody = utf8.decode(response.bodyBytes);
         final data = jsonDecode(responseBody);
         final botResponse = data['choices'][0]['message']['content'] as String;
-        
+
         // Log the raw response for debugging
         developer.log(
           'Raw response: $botResponse',
           name: 'AzureOpenAI/Response',
         );
-        
+
         // Clean up the response
         final cleanResponse = _cleanResponse(botResponse);
-        
+
         // Log the cleaned response
         developer.log(
           'Cleaned response: $cleanResponse',
           name: 'AzureOpenAI/CleanedResponse',
         );
-        
+
         // Add bot response to history
-        conversationHistory.add({'role': 'assistant', 'content': cleanResponse});
-        
+        conversationHistory.add({
+          'role': 'assistant',
+          'content': cleanResponse,
+        });
+
         return cleanResponse;
       } else {
         developer.log(
@@ -106,7 +119,8 @@ class AzureOpenAIService extends GetxService {
     // Add system message to set the context
     conversationHistory.add({
       'role': 'system',
-      'content': 'You are a helpful AI assistant. Respond in a friendly and concise manner. When using emojis, use proper Unicode emojis.'
+      'content':
+          'You are a helpful AI assistant. Respond in a friendly and concise manner. When using emojis, use proper Unicode emojis.',
     });
   }
 
@@ -115,4 +129,4 @@ class AzureOpenAIService extends GetxService {
     conversationHistory.clear();
     super.onClose();
   }
-} 
+}
