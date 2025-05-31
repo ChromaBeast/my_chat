@@ -78,14 +78,12 @@ class ImageGenerationScreen extends GetView<ImageGenerationController> {
                   else if (controller.isLoading.value)
                     Center(
                       child: Shimmer.fromColors(
-                        baseColor:
-                            isLight
-                                ? Colors.grey.shade300
-                                : Colors.grey.shade800,
-                        highlightColor:
-                            isLight
-                                ? Colors.grey.shade100
-                                : Colors.grey.shade700,
+                        baseColor: isLight
+                            ? Colors.grey.shade300
+                            : Colors.grey.shade800,
+                        highlightColor: isLight
+                            ? Colors.grey.shade100
+                            : Colors.grey.shade700,
                         child: Container(
                           width: 512,
                           height: 512,
@@ -129,25 +127,29 @@ class ImageGenerationScreen extends GetView<ImageGenerationController> {
                                     filterQuality: FilterQuality.medium,
                                     cacheWidth: 1024,
                                     cacheHeight: 1024,
-                                    frameBuilder: (
-                                      context,
-                                      child,
-                                      frame,
-                                      wasSynchronouslyLoaded,
-                                    ) {
-                                      if (frame == null) {
-                                        return Container(
-                                          height: 400,
-                                          color: theme.colorScheme.surface,
-                                          child: Center(
-                                            child: CircularProgressIndicator(
-                                              color: theme.colorScheme.primary,
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                      return child;
-                                    },
+                                    frameBuilder:
+                                        (
+                                          context,
+                                          child,
+                                          frame,
+                                          wasSynchronouslyLoaded,
+                                        ) {
+                                          if (frame == null) {
+                                            return Container(
+                                              height: 400,
+                                              color: theme.colorScheme.surface,
+                                              child: Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                      color: theme
+                                                          .colorScheme
+                                                          .primary,
+                                                    ),
+                                              ),
+                                            );
+                                          }
+                                          return child;
+                                        },
                                     errorBuilder: (context, error, stackTrace) {
                                       return Container(
                                         height: 400,
@@ -173,10 +175,9 @@ class ImageGenerationScreen extends GetView<ImageGenerationController> {
                               child: AnimatedContainer(
                                 duration: const Duration(milliseconds: 200),
                                 decoration: BoxDecoration(
-                                  color:
-                                      controller.isDownloading.value
-                                          ? Colors.white.withValues(alpha: 0.05)
-                                          : Colors.white.withValues(alpha: 0.1),
+                                  color: controller.isDownloading.value
+                                      ? Colors.white.withValues(alpha: 0.05)
+                                      : Colors.white.withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(8),
                                   border: Border.all(
                                     color: Colors.white.withValues(alpha: 0.1),
@@ -186,19 +187,17 @@ class ImageGenerationScreen extends GetView<ImageGenerationController> {
                                 child: Material(
                                   color: Colors.transparent,
                                   child: InkWell(
-                                    onTap:
-                                        controller.isDownloading.value
-                                            ? null
-                                            : () async {
-                                              await controller.downloadImage();
-                                              // Show success animation
-                                              if (!controller
-                                                  .isDownloading
-                                                  .value) {
-                                                controller
-                                                    .showDownloadSuccess();
-                                              }
-                                            },
+                                    onTap: controller.isDownloading.value
+                                        ? null
+                                        : () async {
+                                            await controller.downloadImage();
+                                            // Show success animation
+                                            if (!controller
+                                                .isDownloading
+                                                .value) {
+                                              controller.showDownloadSuccess();
+                                            }
+                                          },
                                     borderRadius: BorderRadius.circular(8),
                                     hoverColor: Colors.white.withValues(
                                       alpha: 0.1,
@@ -241,27 +240,27 @@ class ImageGenerationScreen extends GetView<ImageGenerationController> {
                                           children: [
                                             controller.isDownloading.value
                                                 ? SizedBox(
-                                                  width: 16,
-                                                  height: 16,
-                                                  child: CircularProgressIndicator(
-                                                    strokeWidth: 2,
-                                                    valueColor:
-                                                        AlwaysStoppedAnimation<
-                                                          Color
-                                                        >(
-                                                          Colors.white
-                                                              .withValues(
-                                                                alpha: 0.7,
-                                                              ),
-                                                        ),
-                                                  ),
-                                                )
+                                                    width: 16,
+                                                    height: 16,
+                                                    child: CircularProgressIndicator(
+                                                      strokeWidth: 2,
+                                                      valueColor:
+                                                          AlwaysStoppedAnimation<
+                                                            Color
+                                                          >(
+                                                            Colors.white
+                                                                .withValues(
+                                                                  alpha: 0.7,
+                                                                ),
+                                                          ),
+                                                    ),
+                                                  )
                                                 : Icon(
-                                                  Icons.download_rounded,
-                                                  color: Colors.white
-                                                      .withValues(alpha: 0.7),
-                                                  size: 16,
-                                                ),
+                                                    Icons.download_rounded,
+                                                    color: Colors.white
+                                                        .withValues(alpha: 0.7),
+                                                    size: 16,
+                                                  ),
                                             const SizedBox(width: 8),
                                             Text(
                                               controller.isDownloading.value
@@ -291,6 +290,42 @@ class ImageGenerationScreen extends GetView<ImageGenerationController> {
               );
             }),
           ),
+          SizedBox(height: 16),
+          SizedBox(
+            height: 40, // Adjust height as needed
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: controller.availableModes.length,
+              itemBuilder: (context, index) {
+                final mode = controller.availableModes[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  child: Obx(() {
+                    final isSelected = controller.selectedMode.value == mode;
+                    return RawChip(
+                      label: Text(
+                        mode.toPromptString(),
+                        style: TextStyle(
+                          color: isSelected
+                              ? theme.colorScheme.onPrimary
+                              : theme.colorScheme.primary,
+                        ),
+                      ),
+                      selected: isSelected,
+                      onSelected: (_) => controller.updateMode(mode),
+                      selectedColor: theme.colorScheme.primary,
+                      backgroundColor: theme.colorScheme.surface,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      showCheckmark: false,
+                      checkmarkColor: Colors.transparent,
+                    );
+                  }),
+                );
+              },
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.all(16),
             child: Card(
@@ -304,69 +339,62 @@ class ImageGenerationScreen extends GetView<ImageGenerationController> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Obx(
-                    () =>
-                        controller.sourceImageBase64.value.isNotEmpty
-                            ? Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  bottom: BorderSide(
-                                    color: Colors.white.withValues(alpha: 0.1),
-                                    width: 1,
-                                  ),
+                    () => controller.sourceImageBase64.value.isNotEmpty
+                        ? Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: Colors.white.withValues(alpha: 0.1),
+                                  width: 1,
                                 ),
                               ),
-                              child: Row(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(4),
-                                    child: Image.memory(
-                                      base64Decode(
-                                        controller.sourceImageBase64.value
-                                            .replaceFirst(
-                                              RegExp(
-                                                r'data:image/[^;]+;base64,',
-                                              ),
-                                              '',
-                                            ),
-                                      ),
-                                      width: 24,
-                                      height: 24,
-                                      fit: BoxFit.cover,
+                            ),
+                            child: Row(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(4),
+                                  child: Image.memory(
+                                    base64Decode(
+                                      controller.sourceImageBase64.value
+                                          .replaceFirst(
+                                            RegExp(r'data:image/[^;]+;base64,'),
+                                            '',
+                                          ),
                                     ),
+                                    width: 24,
+                                    height: 24,
+                                    fit: BoxFit.cover,
                                   ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    '1374514.png',
-                                    style: TextStyle(
-                                      color: Colors.white.withValues(
-                                        alpha: 0.7,
-                                      ),
-                                      fontSize: 14,
-                                    ),
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  '1374514.png',
+                                  style: TextStyle(
+                                    color: Colors.white.withValues(alpha: 0.7),
+                                    fontSize: 14,
                                   ),
-                                  const Spacer(),
-                                  IconButton(
-                                    icon: Icon(
-                                      Icons.close,
-                                      size: 18,
-                                      color: Colors.white.withValues(
-                                        alpha: 0.7,
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      controller.clearSourceImage();
-                                    },
-                                    padding: EdgeInsets.zero,
-                                    constraints: const BoxConstraints(
-                                      minWidth: 24,
-                                      minHeight: 24,
-                                    ),
+                                ),
+                                const Spacer(),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.close,
+                                    size: 18,
+                                    color: Colors.white.withValues(alpha: 0.7),
                                   ),
-                                ],
-                              ),
-                            )
-                            : const SizedBox(),
+                                  onPressed: () {
+                                    controller.clearSourceImage();
+                                  },
+                                  padding: EdgeInsets.zero,
+                                  constraints: const BoxConstraints(
+                                    minWidth: 24,
+                                    minHeight: 24,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : const SizedBox(),
                   ),
                   Row(
                     children: [
@@ -382,10 +410,9 @@ class ImageGenerationScreen extends GetView<ImageGenerationController> {
                             height: 1.5,
                           ),
                           decoration: InputDecoration(
-                            hintText:
-                                controller.isLoading.value
-                                    ? 'Generating image...'
-                                    : 'Describe the image you want to generate',
+                            hintText: controller.isLoading.value
+                                ? 'Generating image...'
+                                : 'Describe the image you want to generate',
                             hintStyle: TextStyle(
                               color: Colors.white.withValues(alpha: 0.5),
                               fontSize: 14,
@@ -428,10 +455,9 @@ class ImageGenerationScreen extends GetView<ImageGenerationController> {
                             color: theme.colorScheme.primary.withOpacity(0.7),
                             size: 20,
                           ),
-                          onPressed:
-                              !controller.isLoading.value
-                                  ? controller.pickImage
-                                  : null,
+                          onPressed: !controller.isLoading.value
+                              ? controller.pickImage
+                              : null,
                           tooltip: 'Upload image',
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(
@@ -445,10 +471,9 @@ class ImageGenerationScreen extends GetView<ImageGenerationController> {
                             color: theme.colorScheme.primary.withOpacity(0.7),
                             size: 20,
                           ),
-                          onPressed:
-                              !controller.isLoading.value
-                                  ? () => _showOptionsSheet(context, controller)
-                                  : null,
+                          onPressed: !controller.isLoading.value
+                              ? () => _showOptionsSheet(context, controller)
+                              : null,
                           tooltip: 'Options',
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(
@@ -483,10 +508,9 @@ class ImageGenerationScreen extends GetView<ImageGenerationController> {
                               !controller.isLoading.value &&
                               controller.promptText.value.isNotEmpty;
                           return TextButton(
-                            onPressed:
-                                isEnabled
-                                    ? () => controller.generateImage()
-                                    : null,
+                            onPressed: isEnabled
+                                ? () => controller.generateImage()
+                                : null,
                             style: TextButton.styleFrom(
                               backgroundColor: theme.colorScheme.primary
                                   .withOpacity(0.08),
@@ -536,194 +560,167 @@ class ImageGenerationScreen extends GetView<ImageGenerationController> {
     ImageGenerationController controller,
   ) {
     final theme = Theme.of(context);
-    final isLight = theme.brightness == Brightness.light;
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: theme.colorScheme.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
       isScrollControlled: true,
-      builder:
-          (context) => SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(
-                16,
-                16,
-                16,
-                16 + MediaQuery.of(context).viewInsets.bottom,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        'Generation Options',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: theme.colorScheme.primary,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const Spacer(),
-                      IconButton(
-                        icon: const Icon(Icons.close),
-                        onPressed: () => Navigator.pop(context),
-                        tooltip: 'Close',
-                      ),
-                    ],
+      builder: (context) {
+        return Container(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 20,
+            right: 20,
+            top: 20,
+          ),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Generation Options',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: theme.colorScheme.primary,
+                    fontWeight: FontWeight.w600,
                   ),
-                  const SizedBox(height: 16),
-                  if (controller.sourceImageBase64.value.isNotEmpty) ...[
-                    Text(
-                      'Image Strength',
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        color: Colors.white.withValues(alpha: 0.7),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Obx(
-                            () => Slider(
-                              value: controller.imageStrength.value,
-                              onChanged: controller.updateImageStrength,
-                              min: 0.0,
-                              max: 1.0,
-                              divisions: 10,
-                              label:
-                                  '${(controller.imageStrength.value * 100).toStringAsFixed(0)}%',
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Divider(
-                      height: 1,
-                      color: Colors.white.withValues(alpha: 0.1),
-                    ),
-                    const SizedBox(height: 16),
-                  ],
+                ),
+                const SizedBox(height: 16),
+                if (controller.sourceImageBase64.value.isNotEmpty) ...[
                   Text(
-                    'Negative Prompt',
+                    'Image Strength',
                     style: theme.textTheme.titleSmall?.copyWith(
-                      color: theme.colorScheme.primary,
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
                   ),
                   const SizedBox(height: 8),
-                  TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Things to avoid in the image...',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(
-                          color: theme.colorScheme.primary.withOpacity(0.1),
-                        ),
-                      ),
-                      filled: true,
-                      fillColor: theme.colorScheme.surface,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
+                  Obx(
+                    () => Slider(
+                      value: controller.imageStrength.value,
+                      onChanged: controller.updateImageStrength,
+                      min: 0.0,
+                      max: 1.0,
+                      divisions: 10,
+                      label:
+                          '${(controller.imageStrength.value * 100).toStringAsFixed(0)}%',
                     ),
-                    style: theme.textTheme.bodyLarge,
-                    onChanged: controller.updateNegativePrompt,
-                    maxLines: 2,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Image Size',
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      color: theme.colorScheme.primary,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children:
-                        controller.availableSizes
-                            .map(
-                              (size) => Obx(() {
-                                final isSelected =
-                                    controller.selectedSize.value == size;
-                                return RawChip(
-                                  label: Text(
-                                    size,
-                                    style: TextStyle(
-                                      color:
-                                          isSelected
-                                              ? theme.colorScheme.onPrimary
-                                              : theme.colorScheme.primary,
-                                    ),
-                                  ),
-                                  selected: isSelected,
-                                  onSelected:
-                                      (_) => controller.updateSize(size),
-                                  selectedColor: theme.colorScheme.primary,
-                                  backgroundColor: theme.colorScheme.surface,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  showCheckmark: false,
-                                  checkmarkColor: Colors.transparent,
-                                );
-                              }),
-                            )
-                            .toList(),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Output Format',
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      color: theme.colorScheme.primary,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children:
-                        controller.availableFormats
-                            .map(
-                              (format) => Obx(() {
-                                final isSelected =
-                                    controller.selectedFormat.value == format;
-                                return RawChip(
-                                  label: Text(
-                                    format.name.toUpperCase(),
-                                    style: TextStyle(
-                                      color:
-                                          isSelected
-                                              ? theme.colorScheme.onPrimary
-                                              : theme.colorScheme.primary,
-                                    ),
-                                  ),
-                                  selected: isSelected,
-                                  onSelected:
-                                      (_) => controller.updateFormat(format),
-                                  selectedColor: theme.colorScheme.primary,
-                                  backgroundColor: theme.colorScheme.surface,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  showCheckmark: false,
-                                  checkmarkColor: Colors.transparent,
-                                );
-                              }),
-                            )
-                            .toList(),
                   ),
                   const SizedBox(height: 16),
                 ],
-              ),
+                Text(
+                  'Negative Prompt',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Things to avoid in the image...',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                        color: theme.colorScheme.primary.withOpacity(0.1),
+                      ),
+                    ),
+                    filled: true,
+                    fillColor: theme.colorScheme.surface,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                  ),
+                  style: theme.textTheme.bodyLarge,
+                  onChanged: controller.updateNegativePrompt,
+                  maxLines: 2,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Image Size',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: controller.availableSizes
+                      .map(
+                        (size) => Obx(() {
+                          final isSelected =
+                              controller.selectedSize.value == size;
+                          return RawChip(
+                            label: Text(
+                              size,
+                              style: TextStyle(
+                                color: isSelected
+                                    ? theme.colorScheme.onPrimary
+                                    : theme.colorScheme.primary,
+                              ),
+                            ),
+                            selected: isSelected,
+                            onSelected: (_) => controller.updateSize(size),
+                            selectedColor: theme.colorScheme.primary,
+                            backgroundColor: theme.colorScheme.surface,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            showCheckmark: false,
+                            checkmarkColor: Colors.transparent,
+                          );
+                        }),
+                      )
+                      .toList(),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Output Format',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: controller.availableFormats
+                      .map(
+                        (format) => Obx(() {
+                          final isSelected =
+                              controller.selectedFormat.value == format;
+                          return RawChip(
+                            label: Text(
+                              format.name.toUpperCase(),
+                              style: TextStyle(
+                                color: isSelected
+                                    ? theme.colorScheme.onPrimary
+                                    : theme.colorScheme.primary,
+                              ),
+                            ),
+                            selected: isSelected,
+                            onSelected: (_) => controller.updateFormat(format),
+                            selectedColor: theme.colorScheme.primary,
+                            backgroundColor: theme.colorScheme.surface,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            showCheckmark: false,
+                            checkmarkColor: Colors.transparent,
+                          );
+                        }),
+                      )
+                      .toList(),
+                ),
+                const SizedBox(height: 16),
+              ],
             ),
           ),
+        );
+      },
     );
   }
 }

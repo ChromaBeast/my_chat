@@ -1,8 +1,8 @@
-
 class AppRoutes {
   static const String navigation = '/navigation';
   static const String chat = '/chat';
   static const String imageGen = '/image-gen';
+  static const String videoGen = '/video-gen';
   static const String tts = '/tts';
   static const String stt = '/stt';
   static const String profile = '/profile';

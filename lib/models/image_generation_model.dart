@@ -5,6 +5,7 @@ class ImageGenerationRequest {
   final String outputFormat;
   final int seed;
   final ImagePrompt? imagePrompt;
+  final ImageGenerationMode? mode;
 
   static const List<String> validSizes = [
     '672x1566', // Portrait - Tall
@@ -25,6 +26,7 @@ class ImageGenerationRequest {
     this.outputFormat = 'png',
     this.seed = 0,
     this.imagePrompt,
+    this.mode,
   }) {
     if (!validSizes.contains(size)) {
       throw ArgumentError(
@@ -46,7 +48,49 @@ class ImageGenerationRequest {
       data['image_prompt'] = imagePrompt!.toJson();
     }
 
+    if (mode != null) {
+      data['prompt'] = '${prompt}, ${mode!.toPromptString()}';
+    }
+
     return data;
+  }
+}
+
+enum ImageGenerationMode {
+  futuristic,
+  ghibli,
+  anime,
+  cyberpunk,
+  fantasy,
+  realistic,
+  cartoon,
+  abstract,
+  impressionist,
+  surreal;
+
+  String toPromptString() {
+    switch (this) {
+      case ImageGenerationMode.futuristic:
+        return 'futuristic style';
+      case ImageGenerationMode.ghibli:
+        return 'ghibli studio style';
+      case ImageGenerationMode.anime:
+        return 'anime style';
+      case ImageGenerationMode.cyberpunk:
+        return 'cyberpunk style';
+      case ImageGenerationMode.fantasy:
+        return 'fantasy art style';
+      case ImageGenerationMode.realistic:
+        return 'realistic photo style';
+      case ImageGenerationMode.cartoon:
+        return 'cartoon style';
+      case ImageGenerationMode.abstract:
+        return 'abstract art style';
+      case ImageGenerationMode.impressionist:
+        return 'impressionistic art style';
+      case ImageGenerationMode.surreal:
+        return 'surreal art style';
+    }
   }
 }
 
@@ -54,25 +98,16 @@ class ImagePrompt {
   final String image;
   final double strength;
 
-  ImagePrompt({
-    required this.image,
-    this.strength = 0.8,
-  });
+  ImagePrompt({required this.image, this.strength = 0.8});
 
-  Map<String, dynamic> toJson() => {
-        'image': image,
-        'strength': strength,
-      };
+  Map<String, dynamic> toJson() => {'image': image, 'strength': strength};
 }
 
 class ImageGenerationResponse {
   final String? image;
   final ImageGenerationError? error;
 
-  ImageGenerationResponse({
-    this.image,
-    this.error,
-  });
+  ImageGenerationResponse({this.image, this.error});
 
   factory ImageGenerationResponse.fromJson(Map<String, dynamic> json) {
     if (json.containsKey('error')) {
@@ -80,9 +115,7 @@ class ImageGenerationResponse {
         error: ImageGenerationError.fromJson(json['error']),
       );
     }
-    return ImageGenerationResponse(
-      image: json['image'] as String?,
-    );
+    return ImageGenerationResponse(image: json['image'] as String?);
   }
 
   bool get isSuccess => image != null;

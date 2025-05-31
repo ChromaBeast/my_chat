@@ -7,6 +7,7 @@ import 'image_generation_screen.dart';
 import 'text_to_speech_screen.dart';
 import 'speech_to_text_screen.dart';
 import 'profile_screen.dart';
+import 'video_generation_screen.dart';
 
 class NavigationScreen extends GetView<NavigationController> {
   const NavigationScreen({super.key});
@@ -18,6 +19,7 @@ class NavigationScreen extends GetView<NavigationController> {
     final List<Widget> screens = [
       const ChatScreenTabView(),
       const ImageGenerationScreen(),
+      const VideoGenerationScreen(),
       const TextToSpeechScreen(),
       const SpeechToTextScreen(),
       const ProfileScreen(),
@@ -41,6 +43,10 @@ class NavigationScreen extends GetView<NavigationController> {
             NavigationDestination(
               icon: Icon(Icons.image),
               label: 'Image Generation',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.videocam),
+              label: 'Video Generation',
             ),
             NavigationDestination(
               icon: Icon(Icons.record_voice_over),

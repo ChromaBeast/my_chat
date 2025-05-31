@@ -5,6 +5,7 @@ import 'bindings/navigation_binding.dart';
 import 'bindings/profile_binding.dart';
 import 'bindings/speech_to_text_binding.dart';
 import 'bindings/text_to_speech_binding.dart';
+import 'bindings/video_generation_binding.dart';
 import 'routes.dart';
 import 'screens/chat_screen.dart';
 import 'screens/image_generation_screen.dart';
@@ -15,6 +16,7 @@ import 'screens/profile_screen.dart';
 import 'screens/speech_to_text_screen.dart';
 import 'screens/splash_screen.dart';
 import 'screens/text_to_speech_screen.dart';
+import 'screens/video_generation_screen.dart';
 
 class AppPages {
   static final pages = [
@@ -32,6 +34,11 @@ class AppPages {
       name: AppRoutes.imageGen,
       page: () => const ImageGenerationScreen(),
       binding: ImageGenerationBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.videoGen,
+      page: () => const VideoGenerationScreen(),
+      binding: VideoGenerationBinding(),
     ),
     GetPage(
       name: AppRoutes.tts,

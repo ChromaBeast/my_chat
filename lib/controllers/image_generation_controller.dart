@@ -9,6 +9,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:image_picker/image_picker.dart';
+import '../models/image_generation_model.dart';
 
 enum ImageFormat { png, jpg }
 
@@ -28,6 +29,7 @@ class ImageGenerationController extends GetxController {
   final imageStrength = 0.8.obs;
   final sourceImageBase64 = RxString('');
   final showOptions = false.obs;
+  final selectedMode = Rx<ImageGenerationMode?>(null);
 
   // Available options
   final List<String> availableSizes = [
@@ -43,6 +45,7 @@ class ImageGenerationController extends GetxController {
   ];
 
   final List<ImageFormat> availableFormats = ImageFormat.values;
+  final List<ImageGenerationMode> availableModes = ImageGenerationMode.values;
 
   @override
   void onInit() {
@@ -78,6 +81,10 @@ class ImageGenerationController extends GetxController {
     selectedFormat.value = format;
   }
 
+  void updateMode(ImageGenerationMode? mode) {
+    selectedMode.value = mode;
+  }
+
   Future<void> pickImage() async {
     try {
       final ImagePicker picker = ImagePicker();
@@ -101,9 +108,7 @@ class ImageGenerationController extends GetxController {
       }
     } catch (e) {
       log('Error picking image: $e');
-      CustomToast.showError(
-        'Failed to pick image: ${e.toString()}',
-      );
+      CustomToast.showError('Failed to pick image: ${e.toString()}');
     }
   }
 
@@ -186,7 +191,7 @@ class ImageGenerationController extends GetxController {
 
       if (success == true) {
         showDownloadSuccess();
-        CustomToast.showSuccess('Image saved to gallery',);
+        CustomToast.showSuccess('Image saved to gallery');
       } else {
         throw Exception('Failed to save image to gallery');
       }
@@ -204,9 +209,7 @@ class ImageGenerationController extends GetxController {
         errorMessage =
             'Permission denied: Unable to access storage. Please grant permission in Settings.';
       }
-      CustomToast.showError(
-        errorMessage,
-      );
+      CustomToast.showError(errorMessage);
     } finally {
       isDownloading.value = false;
     }
@@ -227,6 +230,7 @@ class ImageGenerationController extends GetxController {
         outputFormat: selectedFormat.value.name,
         sourceImageBase64: sourceImageBase64.value,
         imageStrength: imageStrength.value,
+        mode: selectedMode.value,
       );
 
       if (imageUrl.isNotEmpty) {
@@ -242,9 +246,7 @@ class ImageGenerationController extends GetxController {
             'Your prompt contains content that cannot be processed. Please modify your prompt to comply with content guidelines.';
       }
 
-      CustomToast.showError(
-        errorMessage,
-      );
+      CustomToast.showError(errorMessage);
     } finally {
       isLoading.value = false;
     }

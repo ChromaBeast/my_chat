@@ -14,22 +14,26 @@ class ImageGenerationService {
   late final Dio _dio;
 
   ImageGenerationService() {
-    _dio = Dio(BaseOptions(
-      baseUrl: _baseUrl,
-      connectTimeout: const Duration(seconds: 30),
-      receiveTimeout: const Duration(seconds: 120),
-      sendTimeout: const Duration(seconds: 30),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-    ));
+    _dio = Dio(
+      BaseOptions(
+        baseUrl: _baseUrl,
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 120),
+        sendTimeout: const Duration(seconds: 30),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      ),
+    );
 
-    _dio.interceptors.add(LogInterceptor(
-      requestBody: true,
-      responseBody: true,
-      logPrint: (object) => log(object.toString()),
-    ));
+    _dio.interceptors.add(
+      LogInterceptor(
+        requestBody: true,
+        responseBody: true,
+        logPrint: (object) => log(object.toString()),
+      ),
+    );
   }
 
   Future<String> generateImage(
@@ -39,6 +43,7 @@ class ImageGenerationService {
     String outputFormat = 'png',
     String? sourceImageBase64,
     double imageStrength = 0.8,
+    ImageGenerationMode? mode,
   }) async {
     final apiKey = dotenv.env['AZURE_API_KEY'] ?? '';
     if (apiKey.isEmpty) {
@@ -51,11 +56,9 @@ class ImageGenerationService {
       size: size,
       outputFormat: outputFormat,
       imagePrompt: sourceImageBase64 != null && sourceImageBase64.isNotEmpty
-          ? ImagePrompt(
-              image: sourceImageBase64,
-              strength: imageStrength,
-            )
+          ? ImagePrompt(image: sourceImageBase64, strength: imageStrength)
           : null,
+      mode: mode,
     );
 
     int retryCount = 0;
@@ -73,7 +76,7 @@ class ImageGenerationService {
             headers: {
               'Content-Type': 'application/json',
               'Accept': 'application/json',
-              'Authorization': 'Bearer $apiKey'
+              'Authorization': 'Bearer $apiKey',
             },
             responseType: ResponseType.plain,
           ),
@@ -90,8 +93,9 @@ class ImageGenerationService {
         // Try to decode the response as JSON first
         try {
           final decodedResponse = json.decode(response.data.toString());
-          final imageResponse =
-              ImageGenerationResponse.fromJson(decodedResponse);
+          final imageResponse = ImageGenerationResponse.fromJson(
+            decodedResponse,
+          );
 
           if (imageResponse.isError) {
             throw Exception(imageResponse.error!.userFriendlyMessage);
