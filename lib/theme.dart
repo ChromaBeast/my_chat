@@ -82,7 +82,7 @@ class AppTheme {
           ),
         ),
       ),
-      cardTheme: CardThemeData(
+      cardTheme: CardTheme(
         color: const Color(0xFF211F26),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         elevation: 0,
@@ -108,6 +108,7 @@ class AppTheme {
       ),
       dividerColor: const Color(0xFF938F99),
       shadowColor: const Color(0xFF000000),
+      indicatorColor: const Color(0xFFE6E0E9),
       splashColor: const Color(0x40CCCCCC),
       highlightColor: const Color(0x40CCCCCC),
       hoverColor: const Color(0x0AFFFFFF),
@@ -115,7 +116,6 @@ class AppTheme {
       disabledColor: const Color(0x62FFFFFF),
       unselectedWidgetColor: const Color(0xB3FFFFFF),
       visualDensity: VisualDensity.compact,
-      tabBarTheme: TabBarThemeData(indicatorColor: const Color(0xFFE6E0E9)),
     );
   }
 }
