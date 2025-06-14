@@ -6,7 +6,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class VideoGenerationService {
   // static const String _baseUrl = 'https://api.example.com/video-generation/'; // Removed
-  static const int _maxRetries = 3;
+  static const int _maxRetries = 60;
   static const Duration _retryDelay = Duration(
     seconds: 5,
   ); // Increased retry delay
@@ -43,7 +43,12 @@ class VideoGenerationService {
     );
   }
 
-  Future<String> generateVideo(String prompt) async {
+  Future<String> generateVideo(
+    String prompt, {
+    int? width,
+    int? height,
+    int? n_seconds,
+  }) async {
     final apiKey = dotenv.env['AZURE_SORA_TOKEN'];
     if (apiKey == null || apiKey.isEmpty) {
       throw Exception('AZURE_SORA_TOKEN not found in environment variables');
@@ -55,16 +60,17 @@ class VideoGenerationService {
     log('Creating video generation job...');
     final createBody = {
       "prompt": prompt,
-      "width": 480,
-      "height": 480,
-      "n_seconds": 5,
+      "width": width ?? 480, // Use provided width or default
+      "height": height ?? 480, // Use provided height or default
+      "n_seconds": n_seconds ?? 5, // Use provided n_seconds or default
       "model": "sora",
+      "n_variants": 1,
     };
 
     Response createResponse;
     try {
       createResponse = await _dio.post(
-        "",
+        '/openai/v1/video/generations/jobs?api-version=preview',
         data: createBody,
         options: Options(headers: headers),
       );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:get/get.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_markdown_selectionarea/flutter_markdown.dart';
 import '../controllers/chat_controller.dart';
 import '../controllers/text_to_speech_controller.dart';
 import '../widgets/chat_input.dart';
@@ -51,72 +51,76 @@ class ChatScreen extends GetView<ChatController> {
           ),
         ],
       ),
-      child: MarkdownBody(
-        data: cleanText,
-        shrinkWrap: true,
-        styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
-          // Customize styles for assistant messages
-          p: TextStyle(
-            fontSize: 15,
-            color: isUser
-                ? Theme.of(context).colorScheme.onPrimary
-                : Colors.white,
-            height: 1.4,
-          ),
-          strong: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: isUser
-                ? Theme.of(context).colorScheme.onPrimary
-                : Colors.white,
-          ),
-          em: TextStyle(
-            fontStyle: FontStyle.italic,
-            color: isUser
-                ? Theme.of(context).colorScheme.onPrimary
-                : Colors.white,
-          ),
-          h1: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: isUser
-                ? Theme.of(context).colorScheme.onPrimary
-                : Colors.white,
-            height: 1.8,
-          ),
-          h2: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: isUser
-                ? Theme.of(context).colorScheme.onPrimary
-                : Colors.white,
-            height: 1.8,
-          ),
-          h3: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: isUser
-                ? Theme.of(context).colorScheme.onPrimary
-                : Colors.white,
-            height: 1.8,
-          ),
-          blockquote: TextStyle(
-            fontSize: 15,
-            fontStyle: FontStyle.italic,
-            color: isUser
-                ? Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.9)
-                : Colors.white.withOpacity(0.9),
-            height: 1.5,
-          ),
-          code: TextStyle(
-            fontFamily: 'monospace',
-            fontSize: 14,
-            color: isUser
-                ? Theme.of(context).colorScheme.onPrimary
-                : Colors.white,
-            backgroundColor: isUser
-                ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.3)
-                : Colors.grey.shade200,
-            height: 1.5,
+      child: SelectionArea(
+        child: MarkdownBody(
+          data: cleanText,
+          shrinkWrap: true,
+          styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+            // Customize styles for assistant messages
+            p: TextStyle(
+              fontSize: 15,
+              color: isUser
+                  ? Theme.of(context).colorScheme.onPrimary
+                  : Colors.white,
+              height: 1.4,
+            ),
+            strong: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: isUser
+                  ? Theme.of(context).colorScheme.onPrimary
+                  : Colors.white,
+            ),
+            em: TextStyle(
+              fontStyle: FontStyle.italic,
+              color: isUser
+                  ? Theme.of(context).colorScheme.onPrimary
+                  : Colors.white,
+            ),
+            h1: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: isUser
+                  ? Theme.of(context).colorScheme.onPrimary
+                  : Colors.white,
+              height: 1.8,
+            ),
+            h2: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: isUser
+                  ? Theme.of(context).colorScheme.onPrimary
+                  : Colors.white,
+              height: 1.8,
+            ),
+            h3: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: isUser
+                  ? Theme.of(context).colorScheme.onPrimary
+                  : Colors.white,
+              height: 1.8,
+            ),
+            blockquote: TextStyle(
+              fontSize: 15,
+              fontStyle: FontStyle.italic,
+              color: isUser
+                  ? Theme.of(
+                      context,
+                    ).colorScheme.onPrimary.withValues(alpha: 0.9)
+                  : Colors.white.withOpacity(0.9),
+              height: 1.5,
+            ),
+            code: TextStyle(
+              fontFamily: 'monospace',
+              fontSize: 14,
+              color: isUser
+                  ? Theme.of(context).colorScheme.onPrimary
+                  : Colors.white,
+              backgroundColor: isUser
+                  ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.3)
+                  : Colors.grey.shade200,
+              height: 1.5,
+            ),
           ),
         ),
       ),
@@ -375,7 +379,7 @@ class ChatScreenTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final controller = Get.find<ChatController>();
+    Get.find<ChatController>();
     final isLight = Theme.of(context).brightness == Brightness.light;
     return DefaultTabController(
       length: 2,

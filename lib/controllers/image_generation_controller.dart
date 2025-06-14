@@ -186,7 +186,7 @@ class ImageGenerationController extends GetxController {
       // Save to gallery using gallery_saver
       final success = await GallerySaver.saveImage(
         tempPath,
-        albumName: 'AI Generated Images',
+        albumName: 'SuperAI',
       );
 
       if (success == true) {

@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:super_ai/common/custom_toast.dart';
 import '../controllers/chat_controller.dart';
-import 'chat_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/chat_session_model.dart';
 
@@ -255,10 +254,8 @@ class _ChatHistoryScreenState extends State<ChatHistoryScreen> {
                           final tabController = DefaultTabController.of(
                             context,
                           );
-                          if (tabController != null) {
-                            tabController.animateTo(0);
-                          }
-                        },
+                          tabController.animateTo(0);
+                                                },
                       ),
                     ),
                   );

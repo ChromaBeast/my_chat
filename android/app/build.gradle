@@ -19,7 +19,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace = "my.project.my_chat"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = "25.1.8937393"
+    ndkVersion = "28.1.13356709"
 
     compileOptions {
         // Enable desugaring

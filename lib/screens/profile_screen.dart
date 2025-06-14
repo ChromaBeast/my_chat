@@ -36,7 +36,7 @@ class ProfileScreen extends GetView {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              theme.colorScheme.background,
+              theme.colorScheme.surface,
               theme.colorScheme.surface.withOpacity(0.9),
             ],
             begin: Alignment.topCenter,
